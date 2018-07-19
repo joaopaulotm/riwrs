@@ -1,4 +1,5 @@
 #!-*- coding: utf8 -*-
+import functions
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
@@ -26,7 +27,7 @@ class MyListener(StreamListener):
 
 def Principal():
     count = 0 #' + str(count) + '
-    file = 'D:/Pos-Graduacao2017/RIWRS/tweets_usar.json'
+    file = 'tweets_usar.json'
     # setup security
     access_token = ''
     access_token_secret = ''
@@ -62,14 +63,17 @@ def Principal():
         time.sleep(60)
 
 def GravaArquivoLegivel(arquivo_texto):
-    saida = open('D:/Pos-Graduacao2017/RIWRS/limpos.csv', 'w')
-    saida.writelines('id;texto')
+    saida = open('limpos_teste_ml.csv', 'w')
+    saida2 = open('palavras.csv', 'w')
+    saida2.writelines('frase;sentimento')
     for linha in arquivo_texto:
-        try:
-            saida.writelines('\n' + linha['id_str'] + ';' + linha['text'].replace('\n', ' ').replace(';', ' '))
+        try:                        #linha['user']['screen_name']     linha['id_str']
+            saida.writelines('\n' + linha['user']['screen_name'] + ';' + linha['text'].replace('\n', ' ').replace(';', ' '))
+            saida2.writelines('\n' +linha['text'].replace('\n', ' ').replace(';', ' ') + ';' + '')
         except:
             continue
     saida.close()
+    saida2.close()
 
 def Imprime(arquivo):
     tweets_data = []
@@ -83,8 +87,12 @@ def Imprime(arquivo):
             continue
     for line in tweets_data:
         saida.append(line)
-    GravaArquivoLegivel(saida)
+    #functions.GravaArquivoLegivel(saida)
+    #functions.GravaCandidatos(arquivo)
+    #functions.GravaLocalidades(arquivo)
+    #functions.GravaLocalidades(arquivo)
+    functions.CriaVocabulario(arquivo)
 
-#Imprime('D:/Pos-Graduacao2017/RIWRS/tweets_outro.json')
-Principal()
+Imprime('tweets_usar.json')
+#Principal()
 print('**Fim**')
